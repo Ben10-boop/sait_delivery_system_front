@@ -2,6 +2,16 @@ import React, { useState } from "react";
 import { useAuth } from "../hooks/UseAuth";
 import { useUser } from "../hooks/UseUser";
 import { useNavigate } from "react-router-dom";
+import { LoadingButton } from "@mui/lab";
+import {
+  TextField,
+  Stack,
+  Container,
+  Typography,
+  Paper,
+  Box,
+  InputLabel,
+} from "@mui/material";
 
 const Login = () => {
   const { login } = useAuth();
@@ -30,26 +40,42 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <form onSubmit={handleLogin}>
-        <h3>Login</h3>
-        <input
-          type="text"
-          placeholder="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button disabled={isLoading} type="submit">
-          Log in
-        </button>
-      </form>
-    </div>
+    <Container maxWidth="xs">
+      <Paper elevation={6}>
+        <Box
+          sx={{
+            padding: "24px",
+          }}
+        >
+          <form onSubmit={handleLogin}>
+            <Stack spacing={2}>
+              <Typography variant="h3">Login</Typography>
+              <InputLabel id="emailItem">Email</InputLabel>
+              <TextField
+                // labelId="emailItem"
+                type="text"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <InputLabel id="passItem">Password</InputLabel>
+              <TextField
+                // labelId="passItem"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <LoadingButton
+                variant="contained"
+                loading={isLoading}
+                type="submit"
+              >
+                Log in
+              </LoadingButton>
+            </Stack>
+          </form>
+        </Box>
+      </Paper>
+    </Container>
   );
 };
 

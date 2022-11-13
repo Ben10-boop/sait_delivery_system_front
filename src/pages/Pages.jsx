@@ -3,6 +3,7 @@ import Login from "./Login";
 import Packages from "./Packages";
 import { Route, Routes } from "react-router-dom";
 import { ProtectedPage } from "./ProtectedPage";
+import AddPackage from "./AddPackage";
 
 function Pages() {
   return (
@@ -13,6 +14,14 @@ function Pages() {
         element={
           <ProtectedPage roles={["Administrator", "Courier"]}>
             <Packages />
+          </ProtectedPage>
+        }
+      />
+      <Route
+        path="/addPackage"
+        element={
+          <ProtectedPage roles={["Administrator"]}>
+            <AddPackage />
           </ProtectedPage>
         }
       />

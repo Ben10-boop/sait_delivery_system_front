@@ -8,12 +8,29 @@ export const usePackages = () => {
   const { setUser } = useUser();
 
   const getPackages = async () => {
-    console.log("am before get");
     const response = await axios.get(API_URL);
     console.log(response.data);
-    console.log("am after get");
     return response.data;
   };
 
-  return { getPackages };
+  const postPackage = async (size, weight, address, recipientId, state) => {
+    console.log({
+      size,
+      weight,
+      address,
+      recipientId,
+      state,
+    });
+    const response = await axios.post(API_URL, {
+      size,
+      weight,
+      address,
+      recipientId,
+      state,
+    });
+    console.log(response.data);
+    return response.data;
+  };
+
+  return { getPackages, postPackage };
 };
