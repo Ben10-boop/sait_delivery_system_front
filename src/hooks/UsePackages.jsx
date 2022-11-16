@@ -1,14 +1,17 @@
 import axios from "axios";
-import { useUser } from "./UseUser";
 
 const API_URL =
   "https://ben10-boopsaitynaideliverysystem.azurewebsites.net/api/Package";
 
 export const usePackages = () => {
-  const { setUser } = useUser();
-
   const getPackages = async () => {
     const response = await axios.get(API_URL);
+    console.log(response.data);
+    return response.data;
+  };
+
+  const getPackage = async (id) => {
+    const response = await axios.get(API_URL + `/${id}`);
     console.log(response.data);
     return response.data;
   };
@@ -32,5 +35,39 @@ export const usePackages = () => {
     return response.data;
   };
 
-  return { getPackages, postPackage };
+  const putPackage = async (
+    id,
+    size,
+    weight,
+    address,
+    recipientId,
+    assignedToDeliveryId,
+    state
+  ) => {
+    console.log({
+      size,
+      weight,
+      address,
+      recipientId,
+      state,
+    });
+    const response = await axios.put(API_URL + `/${id}`, {
+      size,
+      weight,
+      address,
+      recipientId,
+      assignedToDeliveryId,
+      state,
+    });
+    console.log(response.data);
+    return response.data;
+  };
+
+  const deletePackage = async (id) => {
+    const response = await axios.delete(API_URL + `/${id}`);
+    console.log(response.data);
+    return response.data;
+  };
+
+  return { getPackages, getPackage, postPackage, putPackage, deletePackage };
 };

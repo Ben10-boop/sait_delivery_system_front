@@ -13,13 +13,29 @@ export default function Header() {
   const navigate = useNavigate();
 
   var links = [];
-  if (
+  if (!getUser()) {
+    links = [{ key: "Login", value: "/login" }];
+  } else if (
     getUser()[
       "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-    ] === "Administrator"
+    ] === "Administrator" ||
+    "Courier"
   ) {
-    links = [{ key: "Packages", value: "/Packages" }];
+    links = [
+      { key: "Packages", value: "/packages" },
+      { key: "Logout", value: "/logout" },
+    ];
+  } else if (
+    getUser()[
+      "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+    ] === "Client"
+  ) {
+    links = [
+      { key: "Logout", value: "/logout" },
+      { key: "Find package", value: "/package/find" },
+    ];
   }
+
   return (
     <Box sx={{ flexGrow: 1, paddingBottom: 5 }}>
       <AppBar position="static">
@@ -47,7 +63,6 @@ export default function Header() {
               </Button>
             );
           })}
-          <Button color="inherit">Logout</Button>
         </Toolbar>
       </AppBar>
     </Box>

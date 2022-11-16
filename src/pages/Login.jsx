@@ -31,7 +31,7 @@ const Login = () => {
           "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
         ]
       );
-      navigate("/packages");
+      navigate("/");
     } catch (err) {
       console.log(err);
     } finally {

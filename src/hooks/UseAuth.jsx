@@ -23,5 +23,10 @@ export const useAuth = () => {
     return response.data;
   };
 
-  return { login };
+  const logout = async () => {
+    setToken("");
+    setUser(null);
+  };
+
+  return { login, logout };
 };

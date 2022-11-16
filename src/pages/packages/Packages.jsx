@@ -11,21 +11,17 @@ import {
   Button,
   Stack,
 } from "@mui/material";
-import { usePackages } from "../hooks/UsePackages";
-import { useNavigate } from "react-router-dom";
+import { usePackages } from "../../hooks/UsePackages";
+import { Link, useNavigate } from "react-router-dom";
 
 const Packages = () => {
   const { getPackages } = usePackages();
   const [isLoading, setIsLoading] = useState(false);
   const [packages, setPackages] = useState([]);
-  const hasFetched = useRef(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!hasFetched.current) {
-      handleGetPackages();
-      hasFetched.current = true;
-    }
+    handleGetPackages();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -68,6 +64,8 @@ const Packages = () => {
                 <TableCell>Weight</TableCell>
                 <TableCell>Delivery Address</TableCell>
                 <TableCell>Package State</TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -79,6 +77,12 @@ const Packages = () => {
                     <TableCell>{item.weight}</TableCell>
                     <TableCell>{item.address}</TableCell>
                     <TableCell>{item.state}</TableCell>
+                    <TableCell>
+                      <Link to={"/package/" + item.id}>Edit</Link>
+                    </TableCell>
+                    <TableCell>
+                      <Link to={"/package/delete/" + item.id}>Delete</Link>
+                    </TableCell>
                   </TableRow>
                 );
               })}
@@ -87,7 +91,6 @@ const Packages = () => {
         </TableContainer>
         <Button
           variant="contained"
-          maxWidth="xs"
           onClick={() => {
             navigate("/addPackage");
           }}

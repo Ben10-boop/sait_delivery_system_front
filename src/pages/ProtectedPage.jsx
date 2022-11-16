@@ -6,7 +6,7 @@ export const ProtectedPage = ({ children, roles }) => {
 
   //Authentication
   if (!getUser()) {
-    return <Navigate to="/" />;
+    return <Navigate to="/login" />;
   }
 
   //Authorization
@@ -15,7 +15,7 @@ export const ProtectedPage = ({ children, roles }) => {
       getUser()["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
     )
   ) {
-    return <Navigate to="/packages2" />;
+    return <Navigate to="/" />;
   }
 
   return children;

@@ -11,7 +11,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { usePackages } from "../hooks/UsePackages";
+import { usePackages } from "../../hooks/UsePackages";
 import { useNavigate } from "react-router-dom";
 
 const AddPackage = () => {
@@ -64,7 +64,7 @@ const AddPackage = () => {
               <TextField
                 type="number"
                 value={weight}
-                onChange={(e) => setWeight(e.target.value)}
+                onChange={(e) => setWeight(parseFloat(e.target.value))}
               />
               <InputLabel id="addressInput">Address</InputLabel>
               <TextField
@@ -76,7 +76,7 @@ const AddPackage = () => {
               <TextField
                 type="number"
                 value={recipientId}
-                onChange={(e) => setRecipientId(e.target.value)}
+                onChange={(e) => setRecipientId(parseInt(e.target.value))}
               />
               <InputLabel id="stateSelect">State</InputLabel>
               <Select
