@@ -6,6 +6,7 @@ import axios from "axios";
 import { useUser } from "./hooks/UseUser";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import { Box } from "@mui/material";
 
 function App() {
 const { getToken} = useUser();
@@ -19,7 +20,11 @@ const token = getToken();
     <div className="App">
       <BrowserRouter>
         <Header/>
-        <Pages />
+        <Box sx={{
+          minHeight: "calc(100vh - 56px - 32px - 80px)"
+        }}>
+          <Pages />
+        </Box>
         <Footer/>
       </BrowserRouter>
     </div>

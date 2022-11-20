@@ -17,6 +17,7 @@ export const useAuth = () => {
 
     //for logout delete from localStorage and axios default
     setToken(response.data);
+    axios.defaults.headers.common["Authorization"] = `bearer ${response.data}`;
 
     setUser(jwt_decode(response.data));
 

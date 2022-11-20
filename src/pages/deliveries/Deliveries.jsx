@@ -11,35 +11,28 @@ import {
   Button,
   Stack,
   Typography,
-  TextField,
-  InputLabel,
 } from "@mui/material";
-import { usePackages } from "../../hooks/UsePackages";
 import { useNavigate } from "react-router-dom";
-import { useVehicles } from "../../hooks/UseVehicles";
-import { LoadingButton } from "@mui/lab";
+import { useDeliveries } from "../../hooks/UseDeliveries";
 
-const Packages = () => {
-  const { getPackages, deletePackage } = usePackages();
-  const { getVehiclePackages } = useVehicles();
+const Deliveries = () => {
+  const { getDeliveries, deleteDelivery } = useDeliveries();
   const [isLoading, setIsLoading] = useState(false);
-  const [packages, setPackages] = useState([]);
+  const [deliveries, setDeliveries] = useState([]);
   const [valuesChanged, setValuesChanged] = useState(true);
-  const [vehicleId, setVehicleId] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     setValuesChanged(false);
-    handleGetPackages();
+    handleGetDeliveries();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [valuesChanged]);
 
-  const handleGetPackages = async () => {
+  const handleGetDeliveries = async () => {
     //e.preventDefault();
     try {
       setIsLoading(true);
-      console.log("i'm in handlePackages before getPackages");
-      setPackages(await getPackages());
+      setDeliveries(await getDeliveries());
     } catch (err) {
       console.log(err);
     } finally {
@@ -47,22 +40,11 @@ const Packages = () => {
     }
   };
 
-  const handleDeletePackage = async (packageId) => {
+  const handleDeleteDelivery = async (deliveryId) => {
     try {
       setIsLoading(true);
-      await getVehiclePackages(packageId);
+      await deleteDelivery(deliveryId);
       setValuesChanged(true);
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleFilterPackages = async (vehicleId) => {
-    try {
-      setIsLoading(true);
-      setPackages(await getVehiclePackages(vehicleId));
     } catch (err) {
       console.log(err);
     } finally {
@@ -78,22 +60,7 @@ const Packages = () => {
       }}
     >
       <Stack spacing={2}>
-        <Typography variant="h5">Package list</Typography>
-        <InputLabel id="idInput">Filter by vehicle ID</InputLabel>
-        <TextField
-          type="number"
-          value={vehicleId}
-          onChange={(e) => setVehicleId(parseInt(e.target.value))}
-        />
-        <LoadingButton
-          variant="contained"
-          loading={isLoading}
-          onClick={() => {
-            handleFilterPackages(vehicleId);
-          }}
-        >
-          Filter
-        </LoadingButton>
+        <Typography variant="h5">Delivery list</Typography>
         <TableContainer
           component={Paper}
           sx={{
@@ -105,27 +72,27 @@ const Packages = () => {
             <TableHead>
               <TableRow>
                 <TableCell>ID</TableCell>
-                <TableCell>Size</TableCell>
-                <TableCell>Weight</TableCell>
-                <TableCell>Delivery Address</TableCell>
-                <TableCell>Package State</TableCell>
+                <TableCell>Vehicle ID</TableCell>
+                <TableCell>Courier ID</TableCell>
+                <TableCell>Route</TableCell>
+                <TableCell>Date</TableCell>
                 <TableCell></TableCell>
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {packages.map((item) => {
+              {deliveries.map((item) => {
                 return (
                   <TableRow key={item.id}>
                     <TableCell>{item.id}</TableCell>
-                    <TableCell>{item.size}</TableCell>
-                    <TableCell>{item.weight}</TableCell>
-                    <TableCell>{item.address}</TableCell>
-                    <TableCell>{item.state}</TableCell>
+                    <TableCell>{item.deliveryVehicleId}</TableCell>
+                    <TableCell>{item.deliveryCourierId}</TableCell>
+                    <TableCell>{item.route}</TableCell>
+                    <TableCell>{item.deliveryDate}</TableCell>
                     <TableCell>
                       <Button
                         onClick={() => {
-                          navigate("/package/" + item.id);
+                          navigate("/delivery/" + item.id);
                         }}
                       >
                         Edit
@@ -134,7 +101,7 @@ const Packages = () => {
                     <TableCell>
                       <Button
                         onClick={() => {
-                          handleDeletePackage(item.id);
+                          handleDeleteDelivery(item.id);
                         }}
                       >
                         Delete
@@ -149,14 +116,14 @@ const Packages = () => {
         <Button
           variant="contained"
           onClick={() => {
-            navigate("/addPackage");
+            navigate("/addDelivery");
           }}
         >
-          Add new package
+          Add new delivery
         </Button>
       </Stack>
     </Box>
   );
 };
 
-export default Packages;
+export default Deliveries;

@@ -12,32 +12,28 @@ export default function Header() {
   const { getUser } = useUser();
   const navigate = useNavigate();
 
-  var links = [];
-  if (!getUser()) {
+  let links = [];
+  const userRole =
+    getUser()?.["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+  if (!userRole) {
     links = [{ key: "Login", value: "/login" }];
-  } else if (
-    getUser()[
-      "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-    ] === "Administrator" ||
-    "Courier"
-  ) {
+  } else if (["Administrator", "Courier"].includes(userRole)) {
     links = [
       { key: "Packages", value: "/packages" },
+      { key: "Vehicles", value: "/vehicles" },
+      { key: "Deliveries", value: "/deliveries" },
       { key: "Logout", value: "/logout" },
     ];
-  } else if (
-    getUser()[
-      "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-    ] === "Client"
-  ) {
+  } else {
     links = [
-      { key: "Logout", value: "/logout" },
       { key: "Find package", value: "/package/find" },
+      { key: "Logout", value: "/logout" },
     ];
   }
 
   return (
     <Box sx={{ flexGrow: 1, paddingBottom: 5 }}>
+      {/* need color #1565c0 */}
       <AppBar position="static">
         <Toolbar>
           <IconButton

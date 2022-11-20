@@ -11,35 +11,28 @@ import {
   Button,
   Stack,
   Typography,
-  TextField,
-  InputLabel,
 } from "@mui/material";
-import { usePackages } from "../../hooks/UsePackages";
-import { useNavigate } from "react-router-dom";
 import { useVehicles } from "../../hooks/UseVehicles";
-import { LoadingButton } from "@mui/lab";
+import { useNavigate } from "react-router-dom";
 
-const Packages = () => {
-  const { getPackages, deletePackage } = usePackages();
-  const { getVehiclePackages } = useVehicles();
+const Vehicles = () => {
+  const { getVehicles, deleteVehicle } = useVehicles();
   const [isLoading, setIsLoading] = useState(false);
-  const [packages, setPackages] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
   const [valuesChanged, setValuesChanged] = useState(true);
-  const [vehicleId, setVehicleId] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     setValuesChanged(false);
-    handleGetPackages();
+    handleGetVehicles();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [valuesChanged]);
 
-  const handleGetPackages = async () => {
+  const handleGetVehicles = async () => {
     //e.preventDefault();
     try {
       setIsLoading(true);
-      console.log("i'm in handlePackages before getPackages");
-      setPackages(await getPackages());
+      setVehicles(await getVehicles());
     } catch (err) {
       console.log(err);
     } finally {
@@ -47,22 +40,11 @@ const Packages = () => {
     }
   };
 
-  const handleDeletePackage = async (packageId) => {
+  const handleDeleteVehicle = async (vehicleId) => {
     try {
       setIsLoading(true);
-      await getVehiclePackages(packageId);
+      await deleteVehicle(vehicleId);
       setValuesChanged(true);
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleFilterPackages = async (vehicleId) => {
-    try {
-      setIsLoading(true);
-      setPackages(await getVehiclePackages(vehicleId));
     } catch (err) {
       console.log(err);
     } finally {
@@ -78,22 +60,7 @@ const Packages = () => {
       }}
     >
       <Stack spacing={2}>
-        <Typography variant="h5">Package list</Typography>
-        <InputLabel id="idInput">Filter by vehicle ID</InputLabel>
-        <TextField
-          type="number"
-          value={vehicleId}
-          onChange={(e) => setVehicleId(parseInt(e.target.value))}
-        />
-        <LoadingButton
-          variant="contained"
-          loading={isLoading}
-          onClick={() => {
-            handleFilterPackages(vehicleId);
-          }}
-        >
-          Filter
-        </LoadingButton>
+        <Typography variant="h5">Vehicle list</Typography>
         <TableContainer
           component={Paper}
           sx={{
@@ -105,27 +72,29 @@ const Packages = () => {
             <TableHead>
               <TableRow>
                 <TableCell>ID</TableCell>
-                <TableCell>Size</TableCell>
-                <TableCell>Weight</TableCell>
-                <TableCell>Delivery Address</TableCell>
-                <TableCell>Package State</TableCell>
+                <TableCell>Registration numbers</TableCell>
+                <TableCell>Brand</TableCell>
+                <TableCell>Model</TableCell>
+                <TableCell>Maximum payload</TableCell>
+                <TableCell>Driver ID</TableCell>
                 <TableCell></TableCell>
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {packages.map((item) => {
+              {vehicles.map((item) => {
                 return (
                   <TableRow key={item.id}>
                     <TableCell>{item.id}</TableCell>
-                    <TableCell>{item.size}</TableCell>
-                    <TableCell>{item.weight}</TableCell>
-                    <TableCell>{item.address}</TableCell>
-                    <TableCell>{item.state}</TableCell>
+                    <TableCell>{item.regNumbers}</TableCell>
+                    <TableCell>{item.brand}</TableCell>
+                    <TableCell>{item.model}</TableCell>
+                    <TableCell>{item.maxPayload}</TableCell>
+                    <TableCell>{item.driverId}</TableCell>
                     <TableCell>
                       <Button
                         onClick={() => {
-                          navigate("/package/" + item.id);
+                          navigate("/vehicle/" + item.id);
                         }}
                       >
                         Edit
@@ -134,7 +103,7 @@ const Packages = () => {
                     <TableCell>
                       <Button
                         onClick={() => {
-                          handleDeletePackage(item.id);
+                          handleDeleteVehicle(item.id);
                         }}
                       >
                         Delete
@@ -149,14 +118,14 @@ const Packages = () => {
         <Button
           variant="contained"
           onClick={() => {
-            navigate("/addPackage");
+            navigate("/addVehicle");
           }}
         >
-          Add new package
+          Add new vehicle
         </Button>
       </Stack>
     </Box>
   );
 };
 
-export default Packages;
+export default Vehicles;

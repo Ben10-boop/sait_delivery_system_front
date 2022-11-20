@@ -7,8 +7,13 @@ import AddPackage from "./packages/AddPackage";
 import Logout from "./Logout";
 import Home from "./Home";
 import Package from "./packages/Package";
-import DeletePackage from "./packages/DeletePackage";
 import FindPackage from "./packages/FindPackage";
+import Vehicles from "./vehicles/Vehicles";
+import AddVehicle from "./vehicles/AddVehicle";
+import Vehicle from "./vehicles/Vehicle";
+import Deliveries from "./deliveries/Deliveries";
+import AddDelivery from "./deliveries/AddDelivery";
+import Delivery from "./deliveries/Delivery";
 
 function Pages() {
   return (
@@ -55,18 +60,58 @@ function Pages() {
         }
       />
       <Route
-        path="/package/delete/:identifier"
-        element={
-          <ProtectedPage roles={["Administrator"]}>
-            <DeletePackage />
-          </ProtectedPage>
-        }
-      />
-      <Route
         path="/package/find"
         element={
           <ProtectedPage roles={["Administrator", "Courier", "Client"]}>
             <FindPackage />
+          </ProtectedPage>
+        }
+      />
+      <Route
+        path="/vehicles"
+        element={
+          <ProtectedPage roles={["Administrator", "Courier"]}>
+            <Vehicles />
+          </ProtectedPage>
+        }
+      />
+      <Route
+        path="/addVehicle"
+        element={
+          <ProtectedPage roles={["Administrator"]}>
+            <AddVehicle />
+          </ProtectedPage>
+        }
+      />
+      <Route
+        path="/vehicle/:identifier"
+        element={
+          <ProtectedPage roles={["Administrator"]}>
+            <Vehicle />
+          </ProtectedPage>
+        }
+      />
+      <Route
+        path="/deliveries"
+        element={
+          <ProtectedPage roles={["Administrator", "Courier"]}>
+            <Deliveries />
+          </ProtectedPage>
+        }
+      />
+      <Route
+        path="/addDelivery"
+        element={
+          <ProtectedPage roles={["Administrator", "Courier"]}>
+            <AddDelivery />
+          </ProtectedPage>
+        }
+      />
+      <Route
+        path="/delivery/:identifier"
+        element={
+          <ProtectedPage roles={["Administrator", "Courier"]}>
+            <Delivery />
           </ProtectedPage>
         }
       />
