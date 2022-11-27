@@ -7,6 +7,7 @@ import { useUser } from "./hooks/UseUser";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { Box } from "@mui/material";
+import { ErrorProvider } from "./context/ErrorProvider";
 
 function App() {
 const { getToken} = useUser();
@@ -18,6 +19,7 @@ const token = getToken();
 
   return (
     <div className="App">
+      <ErrorProvider>
       <BrowserRouter>
         <Header/>
         <Box sx={{
@@ -27,6 +29,7 @@ const token = getToken();
         </Box>
         <Footer/>
       </BrowserRouter>
+      </ErrorProvider>
     </div>
   );
 }

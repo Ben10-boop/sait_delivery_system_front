@@ -19,10 +19,23 @@ const AddDelivery = () => {
   const [route, setRoute] = useState("");
   const [deliveryDate, setDeliveryDate] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [emptyError, setEmptyError] = useState(false);
   const navigate = useNavigate();
 
   const handleAddDelivery = async (e) => {
     e.preventDefault();
+    if ([deliveryCourierId < 0, deliveryVehicleId < 0].includes(true)) {
+      setError(true);
+      return;
+    }
+    if (
+      [deliveryVehicleId, deliveryCourierId].includes(0) ||
+      [route, deliveryDate].includes("")
+    ) {
+      setEmptyError(true);
+      return;
+    }
     try {
       setIsLoading(true);
       await postDelivery(
@@ -56,12 +69,26 @@ const AddDelivery = () => {
                 value={deliveryVehicleId}
                 onChange={(e) => setDeliveryVehicleId(parseInt(e.target.value))}
               />
+              {error && deliveryVehicleId < 0 ? (
+                <label style={{ color: "#f44336" }}>
+                  Vehicle ID cannot be negative
+                </label>
+              ) : (
+                ""
+              )}
               <InputLabel id="courierIdInput">Courier ID</InputLabel>
               <TextField
                 type="number"
                 value={deliveryCourierId}
                 onChange={(e) => setDeliveryCourierId(parseInt(e.target.value))}
               />
+              {error && deliveryCourierId < 0 ? (
+                <label style={{ color: "#f44336" }}>
+                  Courier ID cannot be negative
+                </label>
+              ) : (
+                ""
+              )}
               <InputLabel id="routeInput">Route</InputLabel>
               <TextField
                 type="text"
@@ -74,6 +101,13 @@ const AddDelivery = () => {
                 value={deliveryDate}
                 onChange={(e) => setDeliveryDate(e.target.value)}
               />
+              {emptyError ? (
+                <label style={{ color: "#f44336" }}>
+                  All fields are required
+                </label>
+              ) : (
+                ""
+              )}
               <LoadingButton
                 variant="contained"
                 loading={isLoading}

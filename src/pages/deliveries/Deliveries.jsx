@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -14,13 +14,17 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDeliveries } from "../../hooks/UseDeliveries";
+import { useUser } from "../../hooks/UseUser";
 
 const Deliveries = () => {
+  const { getUser } = useUser();
   const { getDeliveries, deleteDelivery } = useDeliveries();
   const [isLoading, setIsLoading] = useState(false);
   const [deliveries, setDeliveries] = useState([]);
   const [valuesChanged, setValuesChanged] = useState(true);
   const navigate = useNavigate();
+  const userRole =
+    getUser()?.["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
 
   useEffect(() => {
     setValuesChanged(false);
@@ -99,13 +103,17 @@ const Deliveries = () => {
                       </Button>
                     </TableCell>
                     <TableCell>
-                      <Button
-                        onClick={() => {
-                          handleDeleteDelivery(item.id);
-                        }}
-                      >
-                        Delete
-                      </Button>
+                      {userRole === "Administrator" ? (
+                        <Button
+                          onClick={() => {
+                            handleDeleteDelivery(item.id);
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      ) : (
+                        ""
+                      )}
                     </TableCell>
                   </TableRow>
                 );

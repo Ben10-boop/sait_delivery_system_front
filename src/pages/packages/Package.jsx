@@ -25,6 +25,7 @@ const Package = () => {
   const [recipientId, setRecipientId] = useState(0);
   const [deliveryId, setDeliveryId] = useState(0);
   const [state, setState] = useState("");
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
 
   let params = useParams();
@@ -36,6 +37,10 @@ const Package = () => {
 
   const handleEditPackage = async (e) => {
     e.preventDefault();
+    if ([weight < 0, recipientId < 0, deliveryId < 0].includes(true)) {
+      setError(true);
+      return;
+    }
     try {
       setIsLoading(true);
       await putPackage(
@@ -88,6 +93,13 @@ const Package = () => {
                 value={weight}
                 onChange={(e) => setWeight(parseFloat(e.target.value))}
               />
+              {error && weight < 0 ? (
+                <label style={{ color: "#f44336" }}>
+                  Weight cannot be negative
+                </label>
+              ) : (
+                ""
+              )}
               <InputLabel id="addressInput">
                 Address : {details["address"]}
               </InputLabel>
@@ -104,6 +116,13 @@ const Package = () => {
                 value={recipientId}
                 onChange={(e) => setRecipientId(parseInt(e.target.value))}
               />
+              {error && recipientId < 0 ? (
+                <label style={{ color: "#f44336" }}>
+                  Recipient ID cannot be negative
+                </label>
+              ) : (
+                ""
+              )}
               <InputLabel id="delivIdInput">
                 Delivery ID :{details["assignedToDeliveryId"] ?? "Not assigned"}
               </InputLabel>
@@ -112,6 +131,13 @@ const Package = () => {
                 value={deliveryId}
                 onChange={(e) => setDeliveryId(parseInt(e.target.value))}
               />
+              {error && deliveryId < 0 ? (
+                <label style={{ color: "#f44336" }}>
+                  Delivery ID cannot be negative
+                </label>
+              ) : (
+                ""
+              )}
               <InputLabel id="stateSelect">
                 State : {details["state"]}
               </InputLabel>

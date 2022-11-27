@@ -9,8 +9,6 @@ import {
   Paper,
   Box,
   InputLabel,
-  Select,
-  MenuItem,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDeliveries } from "../../hooks/UseDeliveries";
@@ -23,6 +21,7 @@ const Delivery = () => {
   const [deliveryCourierId, setDeliveryCourierId] = useState(0);
   const [route, setRoute] = useState("");
   const [deliveryDate, setDeliveryDate] = useState("");
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
 
   let params = useParams();
@@ -34,6 +33,10 @@ const Delivery = () => {
 
   const handleEditDelivery = async (e) => {
     e.preventDefault();
+    if ([deliveryCourierId < 0, deliveryVehicleId < 0].includes(true)) {
+      setError(true);
+      return;
+    }
     try {
       setIsLoading(true);
       await putDelivery(
@@ -72,6 +75,28 @@ const Delivery = () => {
                 value={deliveryVehicleId}
                 onChange={(e) => setDeliveryVehicleId(parseInt(e.target.value))}
               />
+              {error && deliveryVehicleId < 0 ? (
+                <label style={{ color: "#f44336" }}>
+                  Vehicle ID cannot be negative
+                </label>
+              ) : (
+                ""
+              )}
+              <InputLabel id="courierIdInput">
+                Courier ID : {details["deliveryCourierId"]}
+              </InputLabel>
+              <TextField
+                type="number"
+                value={deliveryCourierId}
+                onChange={(e) => setDeliveryCourierId(parseInt(e.target.value))}
+              />
+              {error && deliveryCourierId < 0 ? (
+                <label style={{ color: "#f44336" }}>
+                  Courier ID cannot be negative
+                </label>
+              ) : (
+                ""
+              )}
               <InputLabel id="routeInput">
                 Delivery route : {details["route"]}
               </InputLabel>

@@ -22,10 +22,27 @@ const AddPackage = () => {
   const [recipientId, setRecipientId] = useState(0);
   const [state, setState] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [emptyError, setEmptyError] = useState(false);
   const navigate = useNavigate();
 
   const handleAddPackage = async (e) => {
     e.preventDefault();
+    if (
+      [weight < 0, !Number.isInteger(recipientId), recipientId < 0].includes(
+        true
+      )
+    ) {
+      setError(true);
+      return;
+    }
+    if (
+      [weight, recipientId].includes(0) ||
+      [size, address, state].includes("")
+    ) {
+      setEmptyError(true);
+      return;
+    }
     try {
       setIsLoading(true);
       await postPackage(size, weight, address, recipientId, state);
@@ -66,6 +83,13 @@ const AddPackage = () => {
                 value={weight}
                 onChange={(e) => setWeight(parseFloat(e.target.value))}
               />
+              {error && weight < 0 ? (
+                <label style={{ color: "#f44336" }}>
+                  Weight cannot be negative
+                </label>
+              ) : (
+                ""
+              )}
               <InputLabel id="addressInput">Address</InputLabel>
               <TextField
                 type="text"
@@ -78,6 +102,20 @@ const AddPackage = () => {
                 value={recipientId}
                 onChange={(e) => setRecipientId(parseInt(e.target.value))}
               />
+              {error && recipientId < 0 ? (
+                <label style={{ color: "#f44336" }}>
+                  Recipient ID cannot be negative
+                </label>
+              ) : (
+                ""
+              )}
+              {error && !Number.isInteger(recipientId) ? (
+                <label style={{ color: "#f44336" }}>
+                  Recipient ID must be an integer
+                </label>
+              ) : (
+                ""
+              )}
               <InputLabel id="stateSelect">State</InputLabel>
               <Select
                 labelId="stateSelect"
@@ -89,6 +127,13 @@ const AddPackage = () => {
                 <MenuItem value={"Being delivered"}>Being delivered</MenuItem>
                 <MenuItem value={"Delivered"}>Delivered</MenuItem>
               </Select>
+              {emptyError ? (
+                <label style={{ color: "#f44336" }}>
+                  All fields are required
+                </label>
+              ) : (
+                ""
+              )}
               <LoadingButton
                 variant="contained"
                 loading={isLoading}

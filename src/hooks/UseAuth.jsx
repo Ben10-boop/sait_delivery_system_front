@@ -29,5 +29,21 @@ export const useAuth = () => {
     setUser(null);
   };
 
-  return { login, logout };
+  const registerUser = async (email, password) => {
+    console.log({
+      email,
+      password,
+    });
+    // try {
+    const response = await axios.post(API_URL + "/Register", {
+      email,
+      password,
+    });
+    return response.data;
+    // } catch (err) {
+    //   localStorage.setItem("backError", err);
+    // }
+  };
+
+  return { login, logout, registerUser };
 };

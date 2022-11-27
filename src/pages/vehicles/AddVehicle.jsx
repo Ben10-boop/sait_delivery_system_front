@@ -19,10 +19,21 @@ const AddVehicle = () => {
   const [model, setModel] = useState("");
   const [maxPayload, setMaxPayload] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [emptyError, setEmptyError] = useState(false);
   const navigate = useNavigate();
+  const regNumRegEx = /^([A-Z]){3}([0-9]){3}$/;
 
   const handleAddPackage = async (e) => {
     e.preventDefault();
+    if ([!regNumRegEx.test(regNumbers), maxPayload < 0].includes(true)) {
+      setError(true);
+      return;
+    }
+    if ([maxPayload].includes(0) || [regNumbers, brand, model].includes("")) {
+      setEmptyError(true);
+      return;
+    }
     try {
       setIsLoading(true);
       await postVehicle(regNumbers, brand, model, maxPayload);
@@ -51,6 +62,13 @@ const AddVehicle = () => {
                 value={regNumbers}
                 onChange={(e) => setRegNumbers(e.target.value)}
               />
+              {error && !regNumRegEx.test(regNumbers) ? (
+                <label style={{ color: "#f44336" }}>
+                  Please enter valid registration numbers
+                </label>
+              ) : (
+                ""
+              )}
               <InputLabel id="brandInput">Brand</InputLabel>
               <TextField
                 type="text"
@@ -69,6 +87,20 @@ const AddVehicle = () => {
                 value={maxPayload}
                 onChange={(e) => setMaxPayload(parseInt(e.target.value))}
               />
+              {error && maxPayload < 0 ? (
+                <label style={{ color: "#f44336" }}>
+                  Max Payload cannot be negative
+                </label>
+              ) : (
+                ""
+              )}
+              {emptyError ? (
+                <label style={{ color: "#f44336" }}>
+                  All fields are required
+                </label>
+              ) : (
+                ""
+              )}
               <LoadingButton
                 variant="contained"
                 loading={isLoading}

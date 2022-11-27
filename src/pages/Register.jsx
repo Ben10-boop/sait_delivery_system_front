@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useAuth } from "../hooks/UseAuth";
-import { useUser } from "../hooks/UseUser";
 import { useNavigate } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
 import {
@@ -12,24 +11,27 @@ import {
   Box,
   InputLabel,
 } from "@mui/material";
+import { useError } from "../context/UseError";
 
-const Login = () => {
-  const { login } = useAuth();
-  const { getUser } = useUser();
+const Register = () => {
+  const { setError: setHeaderError } = useError();
+  const { registerUser } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConf, setPasswordConf] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const navigate = useNavigate();
   const emailRegEx = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
 
-  const handleLogin = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     if (
       [
         !emailRegEx.test(email),
         email.length === 0,
         password.length < 9,
+        password !== passwordConf,
       ].includes(true)
     ) {
       setError(true);
@@ -37,15 +39,12 @@ const Login = () => {
     }
     try {
       setIsLoading(true);
-      await login(email, password);
-      console.log(
-        getUser()[
-          "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-        ]
-      );
-      navigate("/");
+      setHeaderError(null);
+      await registerUser(email, password);
+      navigate("/login");
     } catch (err) {
-      console.log(err);
+      console.log(err.response.data);
+      setHeaderError(err.response.data);
     } finally {
       setIsLoading(false);
     }
@@ -59,9 +58,9 @@ const Login = () => {
             padding: "24px",
           }}
         >
-          <form onSubmit={handleLogin}>
+          <form onSubmit={handleRegister}>
             <Stack spacing={2}>
-              <Typography variant="h3">Login</Typography>
+              <Typography variant="h3">Register</Typography>
               <InputLabel id="emailItem">Email</InputLabel>
               <TextField
                 type="text"
@@ -95,12 +94,23 @@ const Login = () => {
               ) : (
                 ""
               )}
+              <InputLabel id="passItem">Confirm Password</InputLabel>
+              <TextField
+                type="password"
+                value={passwordConf}
+                onChange={(e) => setPasswordConf(e.target.value)}
+              />
+              {error && password !== passwordConf ? (
+                <label style={{ color: "#f44336" }}>Passwords must match</label>
+              ) : (
+                ""
+              )}
               <LoadingButton
                 variant="contained"
                 loading={isLoading}
                 type="submit"
               >
-                Log in
+                Register
               </LoadingButton>
             </Stack>
           </form>
@@ -110,4 +120,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

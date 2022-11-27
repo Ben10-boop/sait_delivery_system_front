@@ -9,10 +9,7 @@ import {
   Paper,
   Box,
   InputLabel,
-  Select,
-  MenuItem,
 } from "@mui/material";
-import { usePackages } from "../../hooks/UsePackages";
 import { useNavigate, useParams } from "react-router-dom";
 import { useVehicles } from "../../hooks/UseVehicles";
 
@@ -25,7 +22,9 @@ const Vehicle = () => {
   const [model, setModel] = useState("");
   const [maxPayload, setMaxPayload] = useState(0);
   const [driverId, setDriverId] = useState(0);
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
+  const regNumRegEx = /^([A-Z]){3}([0-9]){3}$/;
 
   let params = useParams();
 
@@ -36,6 +35,16 @@ const Vehicle = () => {
 
   const handleEditVehicle = async (e) => {
     e.preventDefault();
+    if ([maxPayload < 0, driverId < 0].includes(true)) {
+      setError(true);
+      return;
+    }
+    if (regNumbers !== "") {
+      if (!regNumRegEx.test(regNumbers)) {
+        setError(true);
+        return;
+      }
+    }
     try {
       setIsLoading(true);
       await putVehicle(
@@ -75,6 +84,13 @@ const Vehicle = () => {
                 value={regNumbers}
                 onChange={(e) => setRegNumbers(e.target.value)}
               />
+              {error && regNumbers !== "" && !regNumRegEx.test(regNumbers) ? (
+                <label style={{ color: "#f44336" }}>
+                  Please enter valid registration numbers
+                </label>
+              ) : (
+                ""
+              )}
               <InputLabel id="brandInput">
                 Brand : {details["brand"]}
               </InputLabel>
@@ -99,6 +115,13 @@ const Vehicle = () => {
                 value={maxPayload}
                 onChange={(e) => setMaxPayload(parseInt(e.target.value))}
               />
+              {error && maxPayload < 0 ? (
+                <label style={{ color: "#f44336" }}>
+                  Max Payload cannot be negative
+                </label>
+              ) : (
+                ""
+              )}
               <InputLabel id="driverIdInput">
                 Driver ID :{details["driverId"] ?? "Not assigned"}
               </InputLabel>
@@ -107,6 +130,13 @@ const Vehicle = () => {
                 value={driverId}
                 onChange={(e) => setDriverId(parseInt(e.target.value))}
               />
+              {error && driverId < 0 ? (
+                <label style={{ color: "#f44336" }}>
+                  Driver ID cannot be negative
+                </label>
+              ) : (
+                ""
+              )}
               <LoadingButton
                 variant="contained"
                 loading={isLoading}

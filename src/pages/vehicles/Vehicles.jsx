@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -14,13 +14,17 @@ import {
 } from "@mui/material";
 import { useVehicles } from "../../hooks/UseVehicles";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../../hooks/UseUser";
 
 const Vehicles = () => {
+  const { getUser } = useUser();
   const { getVehicles, deleteVehicle } = useVehicles();
   const [isLoading, setIsLoading] = useState(false);
   const [vehicles, setVehicles] = useState([]);
   const [valuesChanged, setValuesChanged] = useState(true);
   const navigate = useNavigate();
+  const userRole =
+    getUser()?.["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
 
   useEffect(() => {
     setValuesChanged(false);
@@ -92,22 +96,30 @@ const Vehicles = () => {
                     <TableCell>{item.maxPayload}</TableCell>
                     <TableCell>{item.driverId}</TableCell>
                     <TableCell>
-                      <Button
-                        onClick={() => {
-                          navigate("/vehicle/" + item.id);
-                        }}
-                      >
-                        Edit
-                      </Button>
+                      {userRole === "Administrator" ? (
+                        <Button
+                          onClick={() => {
+                            navigate("/vehicle/" + item.id);
+                          }}
+                        >
+                          Edit
+                        </Button>
+                      ) : (
+                        ""
+                      )}
                     </TableCell>
                     <TableCell>
-                      <Button
-                        onClick={() => {
-                          handleDeleteVehicle(item.id);
-                        }}
-                      >
-                        Delete
-                      </Button>
+                      {userRole === "Administrator" ? (
+                        <Button
+                          onClick={() => {
+                            handleDeleteVehicle(item.id);
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      ) : (
+                        ""
+                      )}
                     </TableCell>
                   </TableRow>
                 );
@@ -115,14 +127,18 @@ const Vehicles = () => {
             </TableBody>
           </Table>
         </TableContainer>
-        <Button
-          variant="contained"
-          onClick={() => {
-            navigate("/addVehicle");
-          }}
-        >
-          Add new vehicle
-        </Button>
+        {userRole === "Administrator" ? (
+          <Button
+            variant="contained"
+            onClick={() => {
+              navigate("/addVehicle");
+            }}
+          >
+            Add new vehicle
+          </Button>
+        ) : (
+          ""
+        )}
       </Stack>
     </Box>
   );

@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Login from "./Login";
 import Packages from "./packages/Packages";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { ProtectedPage } from "./ProtectedPage";
 import AddPackage from "./packages/AddPackage";
 import Logout from "./Logout";
@@ -14,11 +14,19 @@ import Vehicle from "./vehicles/Vehicle";
 import Deliveries from "./deliveries/Deliveries";
 import AddDelivery from "./deliveries/AddDelivery";
 import Delivery from "./deliveries/Delivery";
+import Register from "./Register";
+import { useError } from "../context/UseError";
 
 function Pages() {
+  const { setError } = useError();
+  const location = useLocation();
+  useEffect(() => {
+    setError(null);
+  }, [location, setError]);
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
       <Route
         path="/packages"
         element={

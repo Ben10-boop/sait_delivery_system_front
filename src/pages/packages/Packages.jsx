@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -18,15 +18,20 @@ import { usePackages } from "../../hooks/UsePackages";
 import { useNavigate } from "react-router-dom";
 import { useVehicles } from "../../hooks/UseVehicles";
 import { LoadingButton } from "@mui/lab";
+import { useUser } from "../../hooks/UseUser";
 
 const Packages = () => {
+  const { getUser } = useUser();
   const { getPackages, deletePackage } = usePackages();
   const { getVehiclePackages } = useVehicles();
   const [isLoading, setIsLoading] = useState(false);
   const [packages, setPackages] = useState([]);
   const [valuesChanged, setValuesChanged] = useState(true);
   const [vehicleId, setVehicleId] = useState(0);
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
+  const userRole =
+    getUser()?.["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
 
   useEffect(() => {
     setValuesChanged(false);
@@ -50,7 +55,7 @@ const Packages = () => {
   const handleDeletePackage = async (packageId) => {
     try {
       setIsLoading(true);
-      await getVehiclePackages(packageId);
+      await deletePackage(packageId);
       setValuesChanged(true);
     } catch (err) {
       console.log(err);
@@ -60,6 +65,10 @@ const Packages = () => {
   };
 
   const handleFilterPackages = async (vehicleId) => {
+    if (vehicleId < 0) {
+      setError(true);
+      return;
+    }
     try {
       setIsLoading(true);
       setPackages(await getVehiclePackages(vehicleId));
@@ -77,7 +86,13 @@ const Packages = () => {
         justifyContent: "center",
       }}
     >
-      <Stack spacing={2}>
+      <Stack
+        spacing={2}
+        sx={{
+          maxWidth: "100vw",
+          overflowX: "hidden",
+        }}
+      >
         <Typography variant="h5">Package list</Typography>
         <InputLabel id="idInput">Filter by vehicle ID</InputLabel>
         <TextField
@@ -85,6 +100,13 @@ const Packages = () => {
           value={vehicleId}
           onChange={(e) => setVehicleId(parseInt(e.target.value))}
         />
+        {error && vehicleId < 0 ? (
+          <label style={{ color: "#f44336" }}>
+            Vehicle ID cannot be negative
+          </label>
+        ) : (
+          ""
+        )}
         <LoadingButton
           variant="contained"
           loading={isLoading}
@@ -99,6 +121,7 @@ const Packages = () => {
           sx={{
             width: "100%",
             maxWidth: 960,
+            overflowX: "auto",
           }}
         >
           <Table size="small" aria-label="a dense table">
@@ -132,13 +155,17 @@ const Packages = () => {
                       </Button>
                     </TableCell>
                     <TableCell>
-                      <Button
-                        onClick={() => {
-                          handleDeletePackage(item.id);
-                        }}
-                      >
-                        Delete
-                      </Button>
+                      {userRole === "Administrator" ? (
+                        <Button
+                          onClick={() => {
+                            handleDeletePackage(item.id);
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      ) : (
+                        ""
+                      )}
                     </TableCell>
                   </TableRow>
                 );
@@ -146,14 +173,18 @@ const Packages = () => {
             </TableBody>
           </Table>
         </TableContainer>
-        <Button
-          variant="contained"
-          onClick={() => {
-            navigate("/addPackage");
-          }}
-        >
-          Add new package
-        </Button>
+        {userRole === "Administrator" ? (
+          <Button
+            variant="contained"
+            onClick={() => {
+              navigate("/addPackage");
+            }}
+          >
+            Add new package
+          </Button>
+        ) : (
+          ""
+        )}
       </Stack>
     </Box>
   );
