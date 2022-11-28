@@ -67,13 +67,20 @@ const Deliveries = () => {
         justifyContent: "center",
       }}
     >
-      <Stack spacing={2}>
+      <Stack
+        spacing={2}
+        sx={{
+          maxWidth: "100vw",
+          overflowX: "hidden",
+        }}
+      >
         <Typography variant="h5">Delivery list</Typography>
         <TableContainer
           component={Paper}
           sx={{
             width: "100%",
             maxWidth: 960,
+            overflowX: "auto",
           }}
         >
           <Table size="small" aria-label="a dense table">
