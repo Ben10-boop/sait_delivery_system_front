@@ -15,8 +15,10 @@ import {
 import { useVehicles } from "../../hooks/UseVehicles";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../hooks/UseUser";
+import { useError } from "../../context/UseError";
 
 const Vehicles = () => {
+  const { setError: setHeaderError } = useError();
   const { getUser } = useUser();
   const { getVehicles, deleteVehicle } = useVehicles();
   const [isLoading, setIsLoading] = useState(false);
@@ -36,9 +38,11 @@ const Vehicles = () => {
     //e.preventDefault();
     try {
       setIsLoading(true);
+      setHeaderError(null);
       setVehicles(await getVehicles());
     } catch (err) {
       console.log(err);
+      setHeaderError(err.response.data);
     } finally {
       setIsLoading(false);
     }

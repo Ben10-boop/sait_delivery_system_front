@@ -12,8 +12,10 @@ import {
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { useVehicles } from "../../hooks/UseVehicles";
+import { useError } from "../../context/UseError";
 
 const Vehicle = () => {
+  const { setError: setHeaderError } = useError();
   const { putVehicle, getVehicle } = useVehicles();
   const [isLoading, setIsLoading] = useState(false);
   const [details, setDetails] = useState({});
@@ -47,6 +49,7 @@ const Vehicle = () => {
     }
     try {
       setIsLoading(true);
+      setHeaderError(null);
       await putVehicle(
         params.identifier,
         regNumbers,
@@ -58,6 +61,7 @@ const Vehicle = () => {
       navigate("/vehicles");
     } catch (err) {
       console.log(err);
+      setHeaderError(err.response.data);
     } finally {
       setIsLoading(false);
     }

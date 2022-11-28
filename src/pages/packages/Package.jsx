@@ -14,8 +14,10 @@ import {
 } from "@mui/material";
 import { usePackages } from "../../hooks/UsePackages";
 import { useNavigate, useParams } from "react-router-dom";
+import { useError } from "../../context/UseError";
 
 const Package = () => {
+  const { setError: setHeaderError } = useError();
   const { putPackage, getPackage } = usePackages();
   const [isLoading, setIsLoading] = useState(false);
   const [details, setDetails] = useState({});
@@ -43,6 +45,7 @@ const Package = () => {
     }
     try {
       setIsLoading(true);
+      setHeaderError(null);
       await putPackage(
         params.identifier,
         size,
@@ -55,6 +58,7 @@ const Package = () => {
       navigate("/packages");
     } catch (err) {
       console.log(err);
+      setHeaderError(err.response.data);
     } finally {
       setIsLoading(false);
     }

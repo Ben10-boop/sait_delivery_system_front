@@ -13,8 +13,10 @@ import {
 } from "@mui/material";
 import { usePackages } from "../../hooks/UsePackages";
 import { useNavigate } from "react-router-dom";
+import { useError } from "../../context/UseError";
 
 const AddPackage = () => {
+  const { setError: setHeaderError } = useError();
   const { postPackage } = usePackages();
   const [size, setSize] = useState("");
   const [weight, setWeight] = useState(0);
@@ -45,10 +47,12 @@ const AddPackage = () => {
     }
     try {
       setIsLoading(true);
+      setHeaderError(null);
       await postPackage(size, weight, address, recipientId, state);
       navigate("/packages");
     } catch (err) {
       console.log(err);
+      setHeaderError(err.response.data);
     } finally {
       setIsLoading(false);
     }

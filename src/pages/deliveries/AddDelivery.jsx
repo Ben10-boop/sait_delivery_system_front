@@ -11,8 +11,10 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDeliveries } from "../../hooks/UseDeliveries";
+import { useError } from "../../context/UseError";
 
 const AddDelivery = () => {
+  const { setError: setHeaderError } = useError();
   const { postDelivery } = useDeliveries();
   const [deliveryVehicleId, setDeliveryVehicleId] = useState(0);
   const [deliveryCourierId, setDeliveryCourierId] = useState(0);
@@ -38,6 +40,7 @@ const AddDelivery = () => {
     }
     try {
       setIsLoading(true);
+      setHeaderError(null);
       await postDelivery(
         deliveryVehicleId,
         deliveryCourierId,
@@ -47,6 +50,7 @@ const AddDelivery = () => {
       navigate("/deliveries");
     } catch (err) {
       console.log(err);
+      setHeaderError(err.response.data);
     } finally {
       setIsLoading(false);
     }

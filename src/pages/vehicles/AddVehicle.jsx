@@ -11,8 +11,10 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useVehicles } from "../../hooks/UseVehicles";
+import { useError } from "../../context/UseError";
 
 const AddVehicle = () => {
+  const { setError: setHeaderError } = useError();
   const { postVehicle } = useVehicles();
   const [regNumbers, setRegNumbers] = useState("");
   const [brand, setBrand] = useState("");
@@ -36,10 +38,12 @@ const AddVehicle = () => {
     }
     try {
       setIsLoading(true);
+      setHeaderError(null);
       await postVehicle(regNumbers, brand, model, maxPayload);
       navigate("/vehicles");
     } catch (err) {
       console.log(err);
+      setHeaderError(err.response.data);
     } finally {
       setIsLoading(false);
     }

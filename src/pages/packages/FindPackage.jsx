@@ -12,9 +12,11 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
+import { useError } from "../../context/UseError";
 import { usePackages } from "../../hooks/UsePackages";
 
 const FindPackage = () => {
+  const { setError: setHeaderError } = useError();
   const { getPackage } = usePackages();
   const [id, setId] = useState(0);
   const [details, setDetails] = useState({});
@@ -30,9 +32,11 @@ const FindPackage = () => {
     e.preventDefault();
     try {
       setIsLoading(true);
+      setHeaderError(null);
       getPackage(id).then((data) => setDetails(data));
     } catch (err) {
       console.log(err);
+      setHeaderError(err.response.data);
     } finally {
       setIsLoading(false);
     }

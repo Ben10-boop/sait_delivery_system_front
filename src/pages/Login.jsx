@@ -12,8 +12,10 @@ import {
   Box,
   InputLabel,
 } from "@mui/material";
+import { useError } from "../context/UseError";
 
 const Login = () => {
+  const { setError: setHeaderError } = useError();
   const { login } = useAuth();
   const { getUser } = useUser();
   const [email, setEmail] = useState("");
@@ -37,6 +39,7 @@ const Login = () => {
     }
     try {
       setIsLoading(true);
+      setHeaderError(null);
       await login(email, password);
       console.log(
         getUser()[
@@ -46,6 +49,7 @@ const Login = () => {
       navigate("/");
     } catch (err) {
       console.log(err);
+      setHeaderError(err.response.data);
     } finally {
       setIsLoading(false);
     }

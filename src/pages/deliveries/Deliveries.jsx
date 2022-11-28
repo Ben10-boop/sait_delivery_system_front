@@ -15,8 +15,10 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useDeliveries } from "../../hooks/UseDeliveries";
 import { useUser } from "../../hooks/UseUser";
+import { useError } from "../../context/UseError";
 
 const Deliveries = () => {
+  const { setError: setHeaderError } = useError();
   const { getUser } = useUser();
   const { getDeliveries, deleteDelivery } = useDeliveries();
   const [isLoading, setIsLoading] = useState(false);
@@ -36,9 +38,11 @@ const Deliveries = () => {
     //e.preventDefault();
     try {
       setIsLoading(true);
+      setHeaderError(null);
       setDeliveries(await getDeliveries());
     } catch (err) {
       console.log(err);
+      setHeaderError(err.response.data);
     } finally {
       setIsLoading(false);
     }

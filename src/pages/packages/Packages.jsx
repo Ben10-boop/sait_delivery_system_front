@@ -19,8 +19,10 @@ import { useNavigate } from "react-router-dom";
 import { useVehicles } from "../../hooks/UseVehicles";
 import { LoadingButton } from "@mui/lab";
 import { useUser } from "../../hooks/UseUser";
+import { useError } from "../../context/UseError";
 
 const Packages = () => {
+  const { setError: setHeaderError } = useError();
   const { getUser } = useUser();
   const { getPackages, deletePackage } = usePackages();
   const { getVehiclePackages } = useVehicles();
@@ -71,9 +73,11 @@ const Packages = () => {
     }
     try {
       setIsLoading(true);
+      setHeaderError(null);
       setPackages(await getVehiclePackages(vehicleId));
     } catch (err) {
       console.log(err);
+      setHeaderError(err.response.data);
     } finally {
       setIsLoading(false);
     }
