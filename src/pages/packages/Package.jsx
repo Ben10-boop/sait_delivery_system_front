@@ -58,7 +58,13 @@ const Package = () => {
       navigate("/packages");
     } catch (err) {
       console.log(err);
-      setHeaderError(err.response.data);
+      if (err.response.data.status) {
+        setHeaderError(
+          err.response.data.status + " " + err.response.data.title
+        );
+      } else {
+        setHeaderError(err.response.data);
+      }
     } finally {
       setIsLoading(false);
     }

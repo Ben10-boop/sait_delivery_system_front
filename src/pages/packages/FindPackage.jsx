@@ -21,22 +21,28 @@ const FindPackage = () => {
   const [id, setId] = useState(0);
   const [details, setDetails] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-
-  //   useEffect(() => {
-  //     if (id !== 0) {
-  //       getPackage(id).then((data) => setDetails(data));
-  //     }
-  //   }, [id]);
+  const [error, setError] = useState(false);
 
   const handleFindItem = async (e) => {
     e.preventDefault();
+    if (id < 0) {
+      setError(true);
+      return;
+    }
     try {
       setIsLoading(true);
       setHeaderError(null);
-      getPackage(id).then((data) => setDetails(data));
+      const data = await getPackage(id);
+      setDetails(data);
     } catch (err) {
       console.log(err);
-      setHeaderError(err.response.data);
+      if (err.response.data.status) {
+        setHeaderError(
+          err.response.data.status + " " + err.response.data.title
+        );
+      } else {
+        setHeaderError(err.response.data);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -44,23 +50,30 @@ const FindPackage = () => {
 
   return (
     <Container maxWidth="xs">
-      <InputLabel id="idInput">Enter your package ID</InputLabel>
-      <TextField
-        type="number"
-        value={id}
-        onChange={(e) => setId(parseInt(e.target.value))}
-      />
-      <LoadingButton
-        sx={{
-          padding: "16px",
-          marginLeft: "10px",
-        }}
-        variant="contained"
-        loading={isLoading}
-        onClick={handleFindItem}
-      >
-        Find
-      </LoadingButton>
+      <Box>
+        <InputLabel id="idInput">Enter your package ID</InputLabel>
+        <TextField
+          type="number"
+          value={id}
+          onChange={(e) => setId(parseInt(e.target.value))}
+        />
+        <LoadingButton
+          sx={{
+            padding: "16px",
+            marginLeft: "10px",
+          }}
+          variant="contained"
+          loading={isLoading}
+          onClick={handleFindItem}
+        >
+          Find
+        </LoadingButton>
+      </Box>
+      {error ? (
+        <label style={{ color: "#f44336" }}>ID cannot be negative</label>
+      ) : (
+        ""
+      )}
       <Paper
         elevation={6}
         sx={{
