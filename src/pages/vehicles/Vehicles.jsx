@@ -21,6 +21,7 @@ const Vehicles = () => {
   const { setError: setHeaderError } = useError();
   const { getUser } = useUser();
   const { getVehicles, deleteVehicle } = useVehicles();
+  // eslint-disable-next-line no-unused-vars
   const [isLoading, setIsLoading] = useState(false);
   const [vehicles, setVehicles] = useState([]);
   const [valuesChanged, setValuesChanged] = useState(true);

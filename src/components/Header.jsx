@@ -7,14 +7,7 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import { useUser } from "../hooks/UseUser";
 import { useNavigate } from "react-router-dom";
-import {
-  Alert,
-  Divider,
-  Drawer,
-  List,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { Alert, Divider, Drawer } from "@mui/material";
 import { useError } from "../context/UseError";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Stack } from "@mui/system";
@@ -31,8 +24,8 @@ export default function Header() {
   const { error } = useError();
   const { getUser } = useUser();
   const navigate = useNavigate();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  // const theme = useTheme();
+  // const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   let links = [];
   const userRole =

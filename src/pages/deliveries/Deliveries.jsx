@@ -21,6 +21,8 @@ const Deliveries = () => {
   const { setError: setHeaderError } = useError();
   const { getUser } = useUser();
   const { getDeliveries, deleteDelivery } = useDeliveries();
+  // @ts-ignore
+  // eslint-disable-next-line no-unused-vars
   const [isLoading, setIsLoading] = useState(false);
   const [deliveries, setDeliveries] = useState([]);
   const [valuesChanged, setValuesChanged] = useState(true);
